@@ -5,6 +5,13 @@
   "license": "MIT",
   "dependencies": {
     "@google-cloud/functions-framework": "^3.0.0",
-    "node-fetch": "^3.2.3"
+    "@google-cloud/tasks": "^2.5.0",
+    "dotenv": "^16.0.0",
+    "node-fetch": "^3.2.3",
+    "redis": "^4.0.4"
+  },
+  "type": "module",
+  "scripts": {
+    "start": "functions-framework --target=worker"
   }
 }

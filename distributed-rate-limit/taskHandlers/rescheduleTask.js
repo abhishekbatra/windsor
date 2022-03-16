@@ -1,8 +1,9 @@
-const {CloudTasksClient} = require('@google-cloud/tasks');
+import {CloudTasksClient} from '@google-cloud/tasks';
+
 const client = new CloudTasksClient();
 
 class TaskRescheduler {
-	createTask (
+	async createTask (
 		project, // Your GCP Project id
 		queue, // Name of your Queue
 		location, // The GCP region of your queue

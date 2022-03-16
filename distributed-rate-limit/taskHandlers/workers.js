@@ -1,17 +1,16 @@
-import { TaskRescheduler } from './rescheduleTask';
+import { TaskHandler } from './base.js';
+import { TaskRescheduler } from './rescheduleTask.js';
+import fetch from 'node-fetch';
 
-const redis = require('redis');
+import redis from 'redis';
 
 const redisClient = redis.createClient({
 	host: process.env.REDIS_HOST,
 	port: parseInt(process.env.REDIS_PORT),
-	password: process.env.REDIS_PASSWORD,
 });
 
 class Worker extends TaskHandler {
-	async run(_task=null) {
-		// task would normally not be null when real data is sent to API
-
+	async run(_taskPayload) {
 		const apiResponse = await fetch(process.env.API_URL);
 		switch (apiResponse.status) {
 			case 200:
@@ -27,31 +26,31 @@ class Worker extends TaskHandler {
 
 class WorkerManagerRedis extends TaskHandler {
 	async popQueue() {
-		redisClient.lPop();
+		redisClient.rPop("queue:tasks");
 	}
 	
-	async rescheduleWorker() {
+	async rescheduleWorker(taskPayload) {
 		const rescheduler = new TaskRescheduler();
 		rescheduler.createTask(
 			process.env.GOOGLE_CLOUD_PROJECT,
 			process.env.QUEUE_NAME,
 			process.env.QUEUE_LOCATION,
 			process.env.FUNCTION_URL,
-			process.env.SERVICE_ACCOUNT_EMAIL,
-			payload,
+			taskPayload,
 		);
 	}
 
 	async handle(req, res) {
 		const worker = new Worker();
-		const workerResponse = worker.run(req, res);
+		const taskPayload = redisClient.lRange("queue:tasks", -1, -1);
+		const workerResponse = worker.run(taskPayload);
 
 		switch(workerResponse) {
 			case 200:
 				this.popQueue();
 				return res.status(200);
 			case 429:
-				this.rescheduleWorker();
+				this.rescheduleWorker(taskPayload);
 				return res.status(429);
 			default:
 				return res.status(500);
