@@ -1,10 +1,10 @@
 class RequestHandler {
-	handle(request, response) {
+	async handle(request, response) {
 		// request: object
-		return this.enqueue(request, response);
+		return await this.enqueue(request, response);
 	}
 
-	enqueue(_request, _response) {
+	async enqueue(_request, _response) {
 		throw Error("NotImplemented");
 	}
 }

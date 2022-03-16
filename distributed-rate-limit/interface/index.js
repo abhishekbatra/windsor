@@ -2,18 +2,18 @@ require('dotenv').config();
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const { GCPRequestHandler } = require('./lib/requestHandlers/gcp');
+const { RedisRequestHandler } = require('./lib/requestHandlers/redis');
 
 const app = express();
 app.use(bodyParser.json())
 
-const port = parseInt(process.env.PORT || "1337");
+const port = parseInt(process.env.PORT || "1338");
 
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
 	const requestJson = req.body;
-	const gcpHandler = new GCPRequestHandler();
+	const requestHandler = new RedisRequestHandler();
 	// TODO: handler instantiation can be through a factory
-	return gcpHandler.handle(requestJson).send();
+	return await requestHandler.handle(requestJson).send();
 });
 
 app.get("/handle-task", (req, res) => {

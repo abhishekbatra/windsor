@@ -1,11 +1,7 @@
-import { RequestHandler } from './base';
-
 const {CloudTasksClient} = require('@google-cloud/tasks');
-
-// Instantiates a client.
 const client = new CloudTasksClient();
 
-class GCPRequestHandler extends RequestHandler {
+class TaskRescheduler {
 	createTask (
 		project, // Your GCP Project id
 		queue, // Name of your Queue
@@ -49,21 +45,6 @@ class GCPRequestHandler extends RequestHandler {
 			console.error(Error(error.message));
 		}
 	}
-
-	enqueue(request, response) {
-		const payload = request;
-
-		this.createTask(
-			process.env.GOOGLE_CLOUD_PROJECT,
-			QUEUE_NAME,
-			QUEUE_LOCATION,
-			FUNCTION_URL,
-			SERVICE_ACCOUNT_EMAIL,
-			payload,
-		);
-
-		return response.status(202); // 202 indicating request received but not completed
-	}
 }
 
-export {GCPRequestHandler};
+export {TaskRescheduler};

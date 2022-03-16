@@ -5,7 +5,7 @@ const port = parseInt(process.env.PORT || "1337");
 
 app.use(
   rateLimit({
-    windowMs: 60000, // 1 minute
+    windowMs: 10000, // 10 seconds
     max: 10,
     // Enforce a global rate limit across all API consumers
     keyGenerator: (_) => "global",
