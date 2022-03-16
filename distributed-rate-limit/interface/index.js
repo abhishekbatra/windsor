@@ -13,9 +13,13 @@ app.get("/", (req, res) => {
 	const requestJson = req.body;
 	const gcpHandler = new GCPRequestHandler();
 	// TODO: handler instantiation can be through a factory
-	return gcpHandler.handle(requestJson);
+	return gcpHandler.handle(requestJson).send();
 });
 
 app.get("/handle-task", (req, res) => {
+	
+});
 
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
 });

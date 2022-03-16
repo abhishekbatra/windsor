@@ -1,5 +1,0 @@
-class TaskHandler {
-	handle(req) {
-
-	}
-}

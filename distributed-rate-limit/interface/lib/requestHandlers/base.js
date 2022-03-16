@@ -1,10 +1,10 @@
 class RequestHandler {
-	handle(request) {
+	handle(request, response) {
 		// request: object
-		return this.enqueue(request);
+		return this.enqueue(request, response);
 	}
 
-	enqueue(request) {
+	enqueue(_request, _response) {
 		throw Error("NotImplemented");
 	}
 }
