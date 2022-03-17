@@ -1,12 +1,12 @@
-import { RequestHandler } from './base';
+import { RequestHandler } from './base.js';
 
-const {CloudTasksClient} = require('@google-cloud/tasks');
+import { CloudTasksClient } from '@google-cloud/tasks';
 
 // Instantiates a client.
 const client = new CloudTasksClient();
 
 class GCPRequestHandler extends RequestHandler {
-	createTask (
+	async createTask (
 		project, // Your GCP Project id
 		queue, // Name of your Queue
 		location, // The GCP region of your queue

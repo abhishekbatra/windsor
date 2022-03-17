@@ -5,9 +5,10 @@ import fetch from 'node-fetch';
 import redis from 'redis';
 
 const redisClient = redis.createClient({
-	host: process.env.REDIS_HOST,
-	port: parseInt(process.env.REDIS_PORT),
+	url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
 });
+
+await redisClient.connect();
 
 class Worker extends TaskHandler {
 	async run(_taskPayload) {

@@ -1,25 +1,11 @@
-require('dotenv').config();
+import 'dotenv/config';
+import { RedisRequestHandler } from './lib/requestHandlers/redis.js';
 
-const express = require('express');
-const bodyParser = require('body-parser');
-const { RedisRequestHandler } = require('./lib/requestHandlers/redis');
-
-const app = express();
-app.use(bodyParser.json())
-
-const port = parseInt(process.env.PORT || "1338");
-
-app.get("/", async (req, res) => {
+const service = async (req, res) => {
 	const requestJson = req.body;
 	const requestHandler = new RedisRequestHandler();
 	// TODO: handler instantiation can be through a factory
-	return await requestHandler.handle(requestJson).send();
-});
+	return (await requestHandler.handle(requestJson, res)).send();
+};
 
-app.get("/handle-task", (req, res) => {
-	
-});
-
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
-});
+export { service };

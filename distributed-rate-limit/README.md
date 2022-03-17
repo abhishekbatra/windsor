@@ -14,5 +14,45 @@ The rest of this is up to you
 
 # Solution instructions
 
+## Deploy on cloud (recommended)
+1. Update variables in interface/.env.yaml and interface/.env.yaml. Samples:
+```
+# interface/.env.yaml
+REDIS_HOST: "<instance>.cloud.redislabs.com"
+REDIS_PORT: "14476"
+WORKER_FUNCTION_URL: "https://<region>-<project-id>.cloudfunctions.net/drl-worker"
+GOOGLE_CLOUD_PROJECT: "<project-id>"
+QUEUE_NAME: "<queue-name>"
+```
+
+```
+# taskHandlers/.env.yaml
+REDIS_HOST: "<instance>.cloud.redislabs.com"
+REDIS_PORT: "14476"
+WORKER_FUNCTION_URL: "https://<region>-<project-id>.cloudfunctions.net/drl-worker"
+GOOGLE_CLOUD_PROJECT: "<project-id>"
+QUEUE_NAME: "<queue-name>"
+API_URL: "https://<project-id>.uc.r.appspot.com"
+```
+
+2. gcloud tasks queues create drl-queue --location "us-central1"
+
+3. ```
+	cd taskHandlers 
+	gcloud functions deploy drl-worker --entry-point worker --runtime nodejs14 --trigger-http --env-vars-file .env.yaml
+	```	
+4. ```
+	cd interface
+	gcloud functions deploy drl-service --entry-point service --runtime nodejs14 --trigger-http --env-vars-file .env.yaml
+	```
+5. ```
+	cd api
+	gcloud app deploy
+	```
+
+	
+## Run locally
 1. docker run -p 6379:6379 --name drl-redis -d redis redis-server --save 60 1 --loglevel warning
 2. gcloud tasks queues create drl-queue --location "us-central1"
+3. cd interface; npx @google-cloud/functions-framework --target=service --port 8081
+4. cd taskHandlers; npx @google-cloud/functions-framework --target=worker --port 8080

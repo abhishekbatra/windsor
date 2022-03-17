@@ -4,14 +4,12 @@ const client = new CloudTasksClient();
 
 class TaskRescheduler {
 	async createTask (
-		project, // Your GCP Project id
-		queue, // Name of your Queue
-		location, // The GCP region of your queue
-		url, // The full url path that the request will be sent to
-		email, // Cloud IAM service account
-		payload, // The task HTTP request body
+		project,
+		queue,
+		location,
+		url,
+		payload,
 	) {
-		// Construct the fully qualified queue name.
 		const parent = client.queuePath(project, location, queue);
 	
 		// Convert message to buffer.
@@ -20,12 +18,7 @@ class TaskRescheduler {
 	
 		const task = {
 			httpRequest: {
-				httpMethod: 'GET',
 				url,
-				oidcToken: {
-					serviceAccountEmail: email,
-					audience: new URL(url).origin,
-				},
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -34,7 +27,7 @@ class TaskRescheduler {
 		};
 	
 		task.scheduleTime = {
-			seconds: 0,
+			seconds: 60,
 		};
 	
 		try {

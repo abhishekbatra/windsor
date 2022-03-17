@@ -6,7 +6,6 @@ class TaskHandler {
 	process(_apiResponse) {
 		// Dummy work
 		setTimeout(() => {
-			res.send("OK");
 		}, Math.random() * (1000 * 3));
 	}
 }
